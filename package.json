@@ -1,7 +1,7 @@
 {
   "name": "final_project",
   "version": "1.0.0",
-  "description": "",
+  "description": "Este es el proyecto de patrones",
   "main": "index.js",
   "scripts": {
     "build": "tsc",

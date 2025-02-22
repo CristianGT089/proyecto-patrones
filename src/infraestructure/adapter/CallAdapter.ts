@@ -59,8 +59,14 @@ export class CallAdapter implements CallPort {
   }
 
   async getAllCalls(): Promise<CallDomain[]> {
-    const allCalls = await this.callRepository.find();
-    return allCalls.map(this.toDomain);
+    try {
+      const allCalls = await this.callRepository.find();
+      console.log("All calls: ", allCalls);
+      return allCalls.map(this.toDomain);
+    } catch (error) {
+      console.error("Error en datos:", error);
+      throw new Error("Error al buscar llamadas");
+    }
   }
 
   async updateCall(id: number, call: Partial<CallDomain>): Promise<boolean> {

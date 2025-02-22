@@ -15,11 +15,11 @@ export class Call {
   id_call!: number;
 
   @ManyToOne(() => Client, (client) => client.calls, { onDelete: "CASCADE" })
-  @JoinColumn({ name: "client_id" })
+  @JoinColumn({ name: "id_client" })
   client_call!: Client;
 
   @ManyToOne(() => User, (user) => user.calls, { onDelete: "CASCADE" })
-  @JoinColumn({ name: "agent_id" })
+  @JoinColumn({ name: "id_agent" })
   agent_call!: User;
 
   @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })

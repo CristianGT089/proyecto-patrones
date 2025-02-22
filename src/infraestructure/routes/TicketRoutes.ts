@@ -11,31 +11,31 @@ const ticketAppService = new TicketApplicationService(ticketAdapter);
 const ticketController = new TicketController(ticketAppService);
 
 //Definir rutas con manejo de errores
-router.get("/tickets", async (req,res)=>{
+router.get("/", async (req,res)=>{
     await ticketController.getAllTickets(req,res);
 });
-router.post("/tickets", async (req, res) => {
+router.post("/", async (req, res) => {
     try {
         await ticketController.createTicket(req, res);
     } catch (error) {
         res.status(500).json({ message: "Error en la creación del ticket", error });
     }
 });
-router.put("/tickets", async (req, res) => {
+router.put("/", async (req, res) => {
     try {
         await ticketController.updateTicket(req, res);
     } catch (error) {
         res.status(500).json({ message: "Error en la creación del ticket", error });
     }
 });
-router.delete("/tickets/id/:id", async (req, res) => {
+router.delete("/id/:id", async (req, res) => {
     try {
         await ticketController.deleteTicket(req, res);
     } catch (error) {
         res.status(500).json({ message: "Error al buscar el ticket", error });
     }
 });
-router.get("/tickets/id/:id", async (req, res) => {
+router.get("/id/:id", async (req, res) => {
     try {
         await ticketController.getTicketById(req, res);
     } catch (error) {

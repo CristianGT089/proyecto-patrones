@@ -11,31 +11,31 @@ const callAppService = new CallApplicationService(callAdapter);
 const callController = new CallController(callAppService);
 
 //Definir rutas con manejo de errores
-router.get("/calls", async (req,res)=>{
+router.get("/", async (req,res)=>{
     await callController.getAllCalls(req,res);
 });
-router.post("/calls", async (req, res) => {
+router.post("/", async (req, res) => {
     try {
         await callController.createCall(req, res);
     } catch (error) {
         res.status(500).json({ message: "Error en la creación de la llamada", error });
     }
 });
-router.put("/calls", async (req, res) => {
+router.put("/", async (req, res) => {
     try {
         await callController.updateCall(req, res);
     } catch (error) {
         res.status(500).json({ message: "Error en la creación de la llamada", error });
     }
 });
-router.delete("/calls/id/:id", async (req, res) => {
+router.delete("/id/:id", async (req, res) => {
     try {
         await callController.deleteCall(req, res);
     } catch (error) {
         res.status(500).json({ message: "Error al buscar la llamada", error });
     }
 });
-router.get("/calls/id/:id", async (req, res) => {
+router.get("/id/:id", async (req, res) => {
     try {
         await callController.getCallById(req, res);
     } catch (error) {

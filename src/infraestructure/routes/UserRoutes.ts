@@ -11,31 +11,31 @@ const userAppService = new UserApplicationService(userAdapter);
 const userController = new UserController(userAppService);
 
 //Definir rutas con manejo de errores
-router.get("/users", async (req,res)=>{
+router.get("/", async (req,res)=>{
     await userController.getAllUsers(req,res);
 });
-router.post("/users", async (req, res) => {
+router.post("/", async (req, res) => {
     try {
         await userController.createUser(req, res);
     } catch (error) {
         res.status(500).json({ message: "Error en la creación de usuario", error });
     }
 });
-router.put("/users", async (req, res) => {
+router.put("/", async (req, res) => {
     try {
         await userController.updateUser(req, res);
     } catch (error) {
         res.status(500).json({ message: "Error en la creación de usuario", error });
     }
 });
-router.delete("/users/id/:id", async (req, res) => {
+router.delete("/id/:id", async (req, res) => {
     try {
         await userController.deleteUser(req, res);
     } catch (error) {
         res.status(500).json({ message: "Error al buscar usuario", error });
     }
 });
-router.get("/users/email/:email", async (req, res) => {
+router.get("/email/:email", async (req, res) => {
     try {
         await userController.getUserByEmail(req, res);
     } catch (error) {
@@ -43,7 +43,7 @@ router.get("/users/email/:email", async (req, res) => {
     }
 });
 
-router.get("/users/id/:id", async (req, res) => {
+router.get("/id/:id", async (req, res) => {
     try {
         await userController.getUserById(req, res);
     } catch (error) {

@@ -26,31 +26,40 @@ export class ClientAdapter implements ClientPort {
     clientEntity.name_client = client.name;
     clientEntity.email_client = client.email;
     clientEntity.phone_client = client.phone;
+    clientEntity.status_client = client.status;
     return clientEntity;
   }
 
   async createClient(client: Omit<ClientDomain, "id">): Promise<number> {
-    const newClient = this.toEntity(client);
-    const savedClient = await this.clientRepository.save(newClient);
-    return savedClient.id_client;
+    try {
+      const newClient = this.toEntity(client);
+      const savedClient = await this.clientRepository.save(newClient);
+      return savedClient.id_client;
+    } catch (error) {
+      console.error("Error al crear el cliente", error);
+      throw new Error("Error al crear el cliente");
+    }
   }
 
   async getClientById(id: number): Promise<ClientDomain | null> {
-    const client = await this.clientRepository.findOne({
-      where: { id_client: id },
-    });
-    return client ? this.toDomain(client) : null;
+    try {
+      const client = await this.clientRepository.findOne({ where: { id_client: id }});
+      return client ? this.toDomain(client) : null;
+    } catch (error) {
+      console.error("Error al buscar el id del cliente:", error);
+      throw new Error("Error al buscar el cliente");
+    }
   }
 
   async getClientByEmail(email: string): Promise<ClientDomain | null> {
-        try {
-            const user = await this.clientRepository.findOne({where: {email_client:email}});
-            return user ? this.toDomain(user): null;
-        } catch (error) {
-            console.error("Error al buscar el email del usuario:",error);
-            throw new Error("Error al buscar por email");
-        }
+    try {
+        const user = await this.clientRepository.findOne({where: {email_client:email}});
+        return user ? this.toDomain(user): null;
+    } catch (error) {
+        console.error("Error al buscar el email del usuario:",error);
+        throw new Error("Error al buscar por email");
     }
+  }
 
   async getAllClients(): Promise<ClientDomain[]> {
     const allClients = await this.clientRepository.find();

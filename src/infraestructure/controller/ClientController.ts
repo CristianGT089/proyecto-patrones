@@ -13,6 +13,8 @@ export class ClientController {
     try {
       const { name, phone, email, status } = req.body;
 
+      console.log("Status: ", status);
+
       if (!/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/.test(name))
         return res.status(400).json({ error: "Nombre inválido" });
 
