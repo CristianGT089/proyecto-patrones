@@ -45,5 +45,6 @@ const loadEnvVars = (): ReturnEnvironmentVars => {
         DB_NAME: value.DB_NAME
     }
 }
+
 const envs = loadEnvVars();
 export default envs;

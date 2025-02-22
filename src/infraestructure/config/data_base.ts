@@ -1,8 +1,12 @@
 import dotenv from "dotenv";
 import { DataSource } from "typeorm";
 import { User } from "../entities/User";
+import { Ticket } from "../entities/Ticket";
+import { Client } from "../entities/Client";
+import { Call } from "../entities/Call";
 
 dotenv.config();
+
 export const AppDataSource = new DataSource({
     type: "mysql",
     host: process.env.DB_HOST,
@@ -12,7 +16,7 @@ export const AppDataSource = new DataSource({
     database: process.env.DB_NAME,
     synchronize: true, // No usar en production
     logging: true,
-    entities: [User],
+    entities: [User, Client, Call, Ticket],
 });
 //Conexión a la DB
 export const connectDB = async ()=>{

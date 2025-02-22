@@ -1,9 +1,9 @@
 import "./infraestructure/config/environment-vars";
 import app from "./infraestructure/web/app";
-import { ServerBooststrap } from "./infraestructure/bootstrap/server.bootstrap";
+import { ServerBootstrap } from "./infraestructure/bootstrap/server.bootstrap";
 import {connectDB } from "./infraestructure/config/data_base";
 
-const serverBooststrap = new ServerBooststrap(app);
+const serverBooststrap = new ServerBootstrap(app);
 
 /**Función auto invocada */
 (async ()=>{
