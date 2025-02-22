@@ -21,7 +21,7 @@ router.post("/", async (req, res) => {
         res.status(500).json({ message: "Error en la creación de cliente", error });
     }
 });
-router.put("/", async (req, res) => {
+router.put("/:id", async (req, res) => {
     try {
         await clientController.updateClient(req, res);
     } catch (error) {

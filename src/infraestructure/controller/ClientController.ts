@@ -99,7 +99,7 @@ export class ClientController {
       const id = parseInt(req.params.id);
       if (isNaN(id)) return res.status(400).json({ error: "ID inválido" });
 
-      const { name, phone, email } = req.body;
+      const { name, phone, email, status } = req.body;
 
       if (name && !/^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$/.test(name.trim()))
         return res.status(400).json({ error: "Nombre inválido" });
@@ -110,7 +110,7 @@ export class ClientController {
       if (email && !/^[\w.-]+@[a-zA-Z\d.-]+\.[a-zA-Z]{2,}$/.test(email))
         return res.status(400).json({ error: "Correo electrónico no válido" });
 
-      const updated = this.app.updateClient(id, { name, phone, email });
+      const updated = this.app.updateClient(id, { name, phone, email, status });
       if (!updated)
         return res
           .status(404)
@@ -118,6 +118,12 @@ export class ClientController {
 
       return res.status(200).json({ message: "Cliente actualizado con éxito" });
     } catch (error) {
+      if (error instanceof Error) {
+        return res.status(500).json({
+          error: "Error interno del servidor",
+          details: error.message,
+        });
+      }
       return res.status(500).json({ error: "Error interno del servidor" });
     }
   }

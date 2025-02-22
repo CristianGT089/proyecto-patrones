@@ -53,42 +53,56 @@ export class ClientAdapter implements ClientPort {
 
   async getClientByEmail(email: string): Promise<ClientDomain | null> {
     try {
-        const user = await this.clientRepository.findOne({where: {email_client:email}});
-        return user ? this.toDomain(user): null;
+      const user = await this.clientRepository.findOne({where: {email_client:email}});
+      return user ? this.toDomain(user): null;
     } catch (error) {
-        console.error("Error al buscar el email del usuario:",error);
-        throw new Error("Error al buscar por email");
+      console.error("Error al buscar el email del cliente:",error);
+      throw new Error("Error al buscar por email");
     }
   }
 
   async getAllClients(): Promise<ClientDomain[]> {
-    const allClients = await this.clientRepository.find();
-    return allClients.map(this.toDomain);
+    try {
+      const allClients = await this.clientRepository.find();
+      return allClients.map(this.toDomain);
+    } catch (error) {
+      console.error("Error en datos:", error);
+      throw new Error("Error al buscar clientes");
+    }
   }
 
-  async updateClient(
-    id: number,
-    Client: Partial<ClientDomain>
-  ): Promise<boolean> {
-    const existClient = await this.clientRepository.findOne({
-      where: { id_client: id },
-    });
-    if (!existClient) return false;
-    Object.assign(existClient, {
-      name_client: Client.name ?? existClient.name_client,
-      email_client: Client.email ?? existClient.email_client,
-      phone_client: Client.phone ?? existClient.phone_client,
-    });
-    await this.clientRepository.save(existClient);
-    return true;
+  async updateClient(id: number, Client: Partial<ClientDomain>): Promise<boolean> {
+    try {
+      const existClient = await this.clientRepository.findOne({where: { id_client: id }});
+      if (!existClient) return false;
+      Object.assign(existClient, {
+        name_client: Client.name ?? existClient.name_client,
+        email_client: Client.email ?? existClient.email_client,
+        phone_client: Client.phone ?? existClient.phone_client,
+        status_client: Client.status ?? existClient.status_client,
+      });
+      await this.clientRepository.save(existClient);
+      return true;
+    } catch (error) {
+      console.error("Error en datos:", error);
+      throw new Error("Error al actualizar los datos del cliente");
+    }
   }
 
   async deleteClient(id: number): Promise<boolean> {
-    const existClient = await this.clientRepository.findOne({
-      where: { id_client: id },
-    });
-    if (!existClient) return false;
-    await this.clientRepository.save(existClient);
-    return true;
+    try {
+      const existClient = await this.clientRepository.findOne({where: { id_client: id }});
+      if (!existClient) return false;
+      
+      Object.assign(existClient, {
+        status_client: 0,
+      });
+
+      await this.clientRepository.save(existClient);
+      return true;
+    } catch (error) {
+      console.error("Error en datos:", error);
+      throw new Error("Error al dar de baja el cliente");
+    }
   }
 }

@@ -21,8 +21,9 @@ router.post("/", async (req, res) => {
         res.status(500).json({ message: "Error en la creación de la llamada", error });
     }
 });
-router.put("/", async (req, res) => {
+router.put("/:id", async (req, res) => {
     try {
+        console.log("req", req.body);
         await callController.updateCall(req, res);
     } catch (error) {
         res.status(500).json({ message: "Error en la creación de la llamada", error });

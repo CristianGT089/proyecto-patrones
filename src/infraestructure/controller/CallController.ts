@@ -90,6 +90,8 @@ export class CallController {
   async updateCall(req: Request, res: Response) {
     try {
       const id = parseInt(req.params.id);
+
+      console.log("id", id);
       if (isNaN(id)) return res.status(400).json({ error: "ID inválido" });
 
       const { clientId, agentId, date, duration, reason, status } = req.body;
@@ -101,11 +103,7 @@ export class CallController {
         return res
           .status(400)
           .json({ error: "Razón debe tener al menos 5 caracteres" });
-
-      const estadosPermitidos = ["completada", "cancelada", "pendiente"];
-      if (status && !estadosPermitidos.includes(status.toLowerCase()))
-        return res.status(400).json({ error: "Estado no válido" });
-
+          
       const updated = this.app.updateCall(id, {
         clientId,
         agentId,
@@ -121,6 +119,12 @@ export class CallController {
 
       return res.status(200).json({ message: "Llamada actualizada con éxito" });
     } catch (error) {
+      if (error instanceof Error) {
+        return res.status(500).json({
+          error: "Error interno del servidor",
+          details: error.message,
+        });
+      }
       return res.status(500).json({ error: "Error interno del servidor" });
     }
   }

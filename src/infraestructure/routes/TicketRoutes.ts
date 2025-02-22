@@ -21,7 +21,7 @@ router.post("/", async (req, res) => {
         res.status(500).json({ message: "Error en la creación del ticket", error });
     }
 });
-router.put("/", async (req, res) => {
+router.put("/:id", async (req, res) => {
     try {
         await ticketController.updateTicket(req, res);
     } catch (error) {

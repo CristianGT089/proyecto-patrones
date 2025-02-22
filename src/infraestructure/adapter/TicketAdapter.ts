@@ -52,10 +52,17 @@ export class TicketAdapter implements TicketPort {
   }
 
   async getTicketById(id: number): Promise<TicketDomain | null> {
-    const ticket = await this.ticketRepository.findOne({
-      where: { id_ticket: id },
-    });
-    return ticket ? this.toDomain(ticket) : null;
+    try {
+      const ticket = await this.ticketRepository.findOne({
+        where: { id_ticket: id },
+        relations: ["call_ticket", "client_ticket"], // Carga las relaciones automáticamente
+      });
+
+      return ticket ? this.toDomain(ticket) : null;
+    } catch (error) {
+      console.error("Error al buscar el id del ticket:", error);
+      throw new Error("Error al buscar el ticket");
+    }
   }
 
   async getAllTickets(): Promise<TicketDomain[]> {
@@ -85,7 +92,8 @@ export class TicketAdapter implements TicketPort {
       Object.assign(existTicket, {
         call_ticket: ticket.callId ?? existTicket.call_ticket,
         client_ticket: ticket.clientId ?? existTicket.client_ticket,
-        description_ticket:ticket.description ?? existTicket.description_ticket,
+        description_ticket:
+          ticket.description ?? existTicket.description_ticket,
         priority_ticket: ticket.priority ?? existTicket.priority_ticket,
         status_ticket: ticket.status ?? existTicket.status_ticket,
       });

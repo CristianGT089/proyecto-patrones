@@ -92,10 +92,6 @@ export class TicketController {
       if (priority && !prioridadesPermitidas.includes(priority.toLowerCase()))
         return res.status(400).json({ error: "Prioridad no válida" });
 
-      const estadosPermitidos = ["abierto", "en progreso", "cerrado"];
-      if (status && !estadosPermitidos.includes(status.toLowerCase()))
-        return res.status(400).json({ error: "Estado no válido" });
-
       const updated = this.app.updateTicket(id, {
         callId,
         clientId,

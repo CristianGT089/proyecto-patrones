@@ -18,7 +18,7 @@ export class CallAdapter implements CallPort {
     return {
       id: call.id_call,
       clientId: call.client_call.id_client, // Extraer ID del objeto Client
-      agentId: call.agent_call.id_user, // Manejar nulo
+      agentId: call.agent_call.id_user,
       date: call.date_call,
       duration: call.duration_call,
       reason: call.reason_call,
@@ -54,8 +54,36 @@ export class CallAdapter implements CallPort {
   }
 
   async getCallById(id: number): Promise<CallDomain | null> {
-    const call = await this.callRepository.findOne({ where: { id_call: id } });
-    return call ? this.toDomain(call) : null;
+    try {
+      const call = await this.callRepository.findOne({
+        where: { id_call: id },
+      });
+
+      // Verificar si la llamada existe antes de cargar relaciones
+      if (call) {
+        const client = await this.callRepository
+          .createQueryBuilder()
+          .relation(CallEntity, "client_call")
+          .of(call)
+          .loadOne();
+
+        const agent = await this.callRepository
+          .createQueryBuilder()
+          .relation(CallEntity, "agent_call")
+          .of(call)
+          .loadOne();
+
+        // Asignar las relaciones al objeto call
+        call.client_call = client;
+        call.agent_call = agent;
+      }
+
+      console.log("Call: ", call);
+      return call ? this.toDomain(call) : null;
+    } catch (error) {
+      console.error("Error al buscar el id de la llamada:", error);
+      throw new Error("Error al buscar la llamada");
+    }
   }
 
   async getAllCalls(): Promise<CallDomain[]> {
@@ -74,18 +102,24 @@ export class CallAdapter implements CallPort {
   }
 
   async updateCall(id: number, call: Partial<CallDomain>): Promise<boolean> {
-    const existCall = await this.callRepository.findOne({
-      where: { id_call: id },
-    });
-    if (!existCall) return false;
-    Object.assign(existCall, {
-      customer_id: call.clientId ?? existCall.client_call,
-      agent_id: call.agentId ?? existCall.client_call,
-      duration: call.duration ?? existCall.duration_call,
-      status: call.status ?? existCall.status_call,
-    });
-    await this.callRepository.save(existCall);
-    return true;
+    try {
+      const existCall = await this.callRepository.findOne({
+        where: { id_call: id },
+      });
+      if (!existCall) return false;
+      Object.assign(existCall, {
+        id_client: call.clientId ?? existCall.client_call,
+        id_agent: call.agentId ?? existCall.client_call,
+        duration: call.duration ?? existCall.duration_call,
+        status: call.status ?? existCall.status_call,
+      });
+
+      await this.callRepository.save(existCall);
+      return true;
+    } catch (error) {
+      console.error("Error en datos:", error);
+      throw new Error("Error al actualizar los datos de la llamada");
+    }
   }
 
   async deleteCall(id: number): Promise<boolean> {

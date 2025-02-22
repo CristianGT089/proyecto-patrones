@@ -21,7 +21,7 @@ router.post("/", async (req, res) => {
         res.status(500).json({ message: "Error en la creación de usuario", error });
     }
 });
-router.put("/", async (req, res) => {
+router.put("/:id", async (req, res) => {
     try {
         await userController.updateUser(req, res);
     } catch (error) {
