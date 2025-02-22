@@ -12,13 +12,6 @@ export class TicketAdapter implements TicketPort {
   constructor() {
     this.ticketRepository = AppDataSource.getRepository(TicketEntity);
   }
-  
-    updateTicket(id: number, ticket: Partial<TicketDomain>): Promise<boolean> {
-        throw new Error("Method not implemented.");
-    }
-    deleteTicket(id: number): Promise<boolean> {
-        throw new Error("Method not implemented.");
-    }
 
   private toDomain(ticket: TicketEntity): TicketDomain {
     return {
@@ -48,9 +41,14 @@ export class TicketAdapter implements TicketPort {
   }
 
   async createTicket(ticket: Omit<TicketDomain, "id">): Promise<number> {
-    const newTicket = this.toEntity(ticket);
-    const savedTicket = await this.ticketRepository.save(newTicket);
-    return savedTicket.id_ticket;
+    try {
+      const newTicket = this.toEntity(ticket);
+      const savedTicket = await this.ticketRepository.save(newTicket);
+      return savedTicket.id_ticket;
+    } catch (error) {
+      console.error("Error al crear el ticket", error);
+      throw new Error("Error al crear el ticket");
+    }
   }
 
   async getTicketById(id: number): Promise<TicketDomain | null> {
@@ -61,8 +59,62 @@ export class TicketAdapter implements TicketPort {
   }
 
   async getAllTickets(): Promise<TicketDomain[]> {
-    const allTickets = await this.ticketRepository.find();
-    return allTickets.map(this.toDomain);
+    try {
+      const allTickets = await this.ticketRepository.find({
+        relations: ["call_ticket", "client_ticket"],
+      });
+
+      return allTickets.map(this.toDomain);
+    } catch (error) {
+      console.error("Error en datos:", error);
+      throw new Error("Error al buscar tickets");
+    }
   }
 
+  async updateTicket(
+    id: number,
+    ticket: Partial<TicketDomain>
+  ): Promise<boolean> {
+    try {
+      const existTicket = await this.ticketRepository.findOne({
+        where: { id_ticket: id },
+      });
+      if (!existTicket) return false;
+
+      // Actualizar solo los campos enviados
+      Object.assign(existTicket, {
+        call_ticket: ticket.callId ?? existTicket.call_ticket,
+        client_ticket: ticket.clientId ?? existTicket.client_ticket,
+        description_ticket:ticket.description ?? existTicket.description_ticket,
+        priority_ticket: ticket.priority ?? existTicket.priority_ticket,
+        status_ticket: ticket.status ?? existTicket.status_ticket,
+      });
+
+      await this.ticketRepository.save(existTicket);
+      return true;
+    } catch (error) {
+      console.error("Error al actualizar el ticket:", error);
+      throw new Error("Error al actualizar los datos del ticket");
+    }
+  }
+
+  async deleteTicket(id: number): Promise<boolean> {
+    try {
+      const existTicket = await this.ticketRepository.findOne({
+        where: { id_ticket: id },
+      });
+      if (!existTicket) return false;
+
+      // Solo actualizar el estado a 0 (dado de baja)
+      Object.assign(existTicket, {
+        status_ticket: 0,
+      });
+
+      await this.ticketRepository.save(existTicket);
+      return true;
+    } catch (error) {
+      console.error("Error al eliminar el ticket:", error);
+      throw new Error("Error al dar de baja el ticket");
+    }
+  }
 }

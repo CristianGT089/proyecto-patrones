@@ -60,8 +60,12 @@ export class CallAdapter implements CallPort {
 
   async getAllCalls(): Promise<CallDomain[]> {
     try {
-      const allCalls = await this.callRepository.find();
+      const allCalls = await this.callRepository.find({
+        relations: ["client_call", "agent_call"],
+      });
+
       console.log("All calls: ", allCalls);
+
       return allCalls.map(this.toDomain);
     } catch (error) {
       console.error("Error en datos:", error);
