@@ -18,7 +18,7 @@ export class Call {
   @JoinColumn({ name: "client_id" })
   client_call!: Client;
 
-  @ManyToOne(() => User, (user) => user.calls, { onDelete: "SET NULL" })
+  @ManyToOne(() => User, (user) => user.calls, { onDelete: "CASCADE" })
   @JoinColumn({ name: "agent_id" })
   agent_call!: User;
 

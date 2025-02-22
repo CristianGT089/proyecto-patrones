@@ -1,53 +1,45 @@
 import { Router } from "express";
-import { UserAdapter } from "../adapter/UserAdapter";
-import { UserApplicationService } from "../../application/UserApplicationService";
-import { UserController } from "../controller/UserController";
+import { TicketAdapter } from "../adapter/TicketAdapter";
+import { TicketApplicationService } from "../../application/TicketApplicationService";
+import { TicketController } from "../controller/TicketController";
 
 const router = Router();
 
 //Inicializamos las capas
-const userAdapter = new UserAdapter();
-const userAppService = new UserApplicationService(userAdapter);
-const userController = new UserController(userAppService);
+const ticketAdapter = new TicketAdapter();
+const ticketAppService = new TicketApplicationService(ticketAdapter);
+const ticketController = new TicketController(ticketAppService);
 
 //Definir rutas con manejo de errores
-router.get("/users", async (req,res)=>{
-    await userController.getAllUsers(req,res);
+router.get("/tickets", async (req,res)=>{
+    await ticketController.getAllTickets(req,res);
 });
-router.post("/users", async (req, res) => {
+router.post("/tickets", async (req, res) => {
     try {
-        await userController.createUser(req, res);
+        await ticketController.createTicket(req, res);
     } catch (error) {
-        res.status(500).json({ message: "Error en la creación de usuario", error });
+        res.status(500).json({ message: "Error en la creación del ticket", error });
     }
 });
-router.put("/users", async (req, res) => {
+router.put("/tickets", async (req, res) => {
     try {
-        await userController.updateUser(req, res);
+        await ticketController.updateTicket(req, res);
     } catch (error) {
-        res.status(500).json({ message: "Error en la creación de usuario", error });
+        res.status(500).json({ message: "Error en la creación del ticket", error });
     }
 });
-router.delete("/users/id/:id", async (req, res) => {
+router.delete("/tickets/id/:id", async (req, res) => {
     try {
-        await userController.deleteUser(req, res);
+        await ticketController.deleteTicket(req, res);
     } catch (error) {
-        res.status(500).json({ message: "Error al buscar usuario", error });
+        res.status(500).json({ message: "Error al buscar el ticket", error });
     }
 });
-router.get("/users/email/:email", async (req, res) => {
+router.get("/tickets/id/:id", async (req, res) => {
     try {
-        await userController.getUserByEmail(req, res);
+        await ticketController.getTicketById(req, res);
     } catch (error) {
-        res.status(500).json({ message: "Error al buscar usuario", error });
-    }
-});
-
-router.get("/users/id/:id", async (req, res) => {
-    try {
-        await userController.getUserById(req, res);
-    } catch (error) {
-        res.status(500).json({ message: "Error al buscar usuario", error });
+        res.status(500).json({ message: "Error al buscar el ticket", error });
     }
 });
 

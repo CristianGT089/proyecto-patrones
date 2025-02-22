@@ -9,11 +9,11 @@ export class Ticket {
   id_ticket!: number;
 
   @ManyToOne(() => Call, (call) => call.tickets, { onDelete: "CASCADE" })
-  @JoinColumn({ name: "call_id" })
+  @JoinColumn({ name: "id_call" })
   call_ticket!: Call;
 
   @ManyToOne(() => Client, (client) => client.tickets, { onDelete: "CASCADE" })
-  @JoinColumn({ name: "client_id" })
+  @JoinColumn({ name: "id_client" })
   client_ticket!: Client;
 
   @Column({ type: "varchar", length: 255, unique: true })
@@ -24,4 +24,5 @@ export class Ticket {
 
   @Column({ type: "int" })
   status_ticket!: number;
+  
 }

@@ -28,7 +28,7 @@ router.put("/clients", async (req, res) => {
         res.status(500).json({ message: "Error en la creación de cliente", error });
     }
 });
-router.delete("/Clients/id/:id", async (req, res) => {
+router.delete("/clients/id/:id", async (req, res) => {
     try {
         await clientController.deleteClient(req, res);
     } catch (error) {

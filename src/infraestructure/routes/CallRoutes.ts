@@ -1,53 +1,45 @@
 import { Router } from "express";
-import { UserAdapter } from "../adapter/UserAdapter";
-import { UserApplicationService } from "../../application/UserApplicationService";
-import { UserController } from "../controller/UserController";
+import { CallAdapter } from "../adapter/CallAdapter";
+import { CallApplicationService } from "../../application/CallApplicationService";
+import { CallController } from "../controller/CallController";
 
 const router = Router();
 
 //Inicializamos las capas
-const userAdapter = new UserAdapter();
-const userAppService = new UserApplicationService(userAdapter);
-const userController = new UserController(userAppService);
+const callAdapter = new CallAdapter();
+const callAppService = new CallApplicationService(callAdapter);
+const callController = new CallController(callAppService);
 
 //Definir rutas con manejo de errores
-router.get("/users", async (req,res)=>{
-    await userController.getAllUsers(req,res);
+router.get("/calls", async (req,res)=>{
+    await callController.getAllCalls(req,res);
 });
-router.post("/users", async (req, res) => {
+router.post("/calls", async (req, res) => {
     try {
-        await userController.createUser(req, res);
+        await callController.createCall(req, res);
     } catch (error) {
-        res.status(500).json({ message: "Error en la creación de usuario", error });
+        res.status(500).json({ message: "Error en la creación de la llamada", error });
     }
 });
-router.put("/users", async (req, res) => {
+router.put("/calls", async (req, res) => {
     try {
-        await userController.updateUser(req, res);
+        await callController.updateCall(req, res);
     } catch (error) {
-        res.status(500).json({ message: "Error en la creación de usuario", error });
+        res.status(500).json({ message: "Error en la creación de la llamada", error });
     }
 });
-router.delete("/users/id/:id", async (req, res) => {
+router.delete("/calls/id/:id", async (req, res) => {
     try {
-        await userController.deleteUser(req, res);
+        await callController.deleteCall(req, res);
     } catch (error) {
-        res.status(500).json({ message: "Error al buscar usuario", error });
+        res.status(500).json({ message: "Error al buscar la llamada", error });
     }
 });
-router.get("/users/email/:email", async (req, res) => {
+router.get("/calls/id/:id", async (req, res) => {
     try {
-        await userController.getUserByEmail(req, res);
+        await callController.getCallById(req, res);
     } catch (error) {
-        res.status(500).json({ message: "Error al buscar usuario", error });
-    }
-});
-
-router.get("/users/id/:id", async (req, res) => {
-    try {
-        await userController.getUserById(req, res);
-    } catch (error) {
-        res.status(500).json({ message: "Error al buscar usuario", error });
+        res.status(500).json({ message: "Error al buscar llamada", error });
     }
 });
 
