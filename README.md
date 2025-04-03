@@ -24,7 +24,7 @@ Antes de ejecutar la aplicación, asegúrate de tener instalados los siguientes 
 1. Clona el repositorio en tu máquina local:
 
     ```bash
-    git clone https://github.com/tu-usuario/call-center-app.git
+    git clone https://github.com/CristianGT089/proyecto-patrones.git
     cd call-center-app
     ```
 
